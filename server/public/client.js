@@ -1,27 +1,33 @@
-console.log( 'js has been loaded' );
+console.log('js has been loaded');
 
-$( document ).ready( onReady );
+$(document).ready(onReady);
 
-function onReady (){
+function onReady() {
     console.log('jq has been loaded');
-    $('#submitButton').on ( 'click', addRestaurant );
+    $('#submitButton').on('click', addRestaurant);
     getRestaurant();
     $('#restList').on('click', '.deleteButton', deleteButton);
+    $('#submitButton').on('click', clearInputs);
 
 }
 
-function deleteButton (){
+function clearInputs() {
+    $('#nameIn').val('');
+    $('#typeIn').val('');
+}
+
+function deleteButton() {
     $(this).closest('tr').fadeOut();
 }
 
-function addRestaurant (){
+function addRestaurant() {
     console.log('submit button clicked');
-    
-    const objectsToSend ={
+
+    const objectsToSend = {
         name: $('#nameIn').val(),
         type: $('#typeIn').val()
     }
-    $.ajax ({
+    $.ajax({
         type: 'POST',
         url: '/restaurant',
         data: objectsToSend
@@ -35,7 +41,7 @@ function addRestaurant (){
     })// end ajax POST
 }
 
-function getRestaurant (){
+function getRestaurant() {
     $.ajax({
         type: 'GET',
         url: '/restaurant'
@@ -44,11 +50,10 @@ function getRestaurant (){
         let restaurant = $('#restList');
         restaurant.empty();
         console.log(response);
-        
-        for (let i = 0; i < response.length; i++) {
+        response.forEach(function (restaurants) {
             restaurant.append(`
-              <tr>  <td> ${ response[i].name}</td><td> ${response[i].type}  </td><td> <button class= "deleteButton">Delete</button></td> </tr>`)
-        }// end for loop    
+              <tr>  <td> ${ restaurants.name}</td><td> ${restaurants.type}  </td><td> <button class= "deleteButton">Delete</button></td> </tr>`)
+        })// end for loop    
     }).catch(function (err) {
         console.log('error with GET:', err);
 
